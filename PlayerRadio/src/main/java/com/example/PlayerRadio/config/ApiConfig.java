@@ -10,6 +10,6 @@ public class ApiConfig {
 
   public String getSearchUrl() {
     return searchUrl;
-  }
+  } 
   
 }
