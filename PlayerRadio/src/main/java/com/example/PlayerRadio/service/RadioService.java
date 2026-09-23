@@ -1,6 +1,5 @@
 package com.example.PlayerRadio.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
@@ -43,11 +42,7 @@ public class RadioService {
             // Filtra a lista por votos (decrescente)
             radioStations.sort(Comparator.comparingInt(RadioStation::getVotes).reversed());
 
-            //Filtra a lista original e cria uma nova lista apenas com os favoritos
-            List<RadioStation> favoriteStations = 
-
             return radioStations;
-
         } catch (HttpServerErrorException e) {
             // Trata erros do servidor (502 Bad Gateway, por exemplo)
             if (e.getStatusCode().value() == 502) {
@@ -65,6 +60,20 @@ public class RadioService {
         }
     }
 
+    public List<RadioStation> listFavoriteStations(List<String> userFavoriteUuids){
+        if (userFavoriteUuids == null || userFavoriteUuids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<RadioStation> todasAsRadios = listRadioStations();
+        // 2. Filtra a lista
+        List<RadioStation> favoriteStations = todasAsRadios.stream()
+            .filter(station -> userFavoriteUuids.contains(station.getStationuuid()))
+            .toList();
+        // 3. RETORNO NOVO: Devolve apenas a lista filtrada
+        return  favoriteStations;
+    }
+
     private List<RadioStation> extractRadioStations(List<Map<String, Object>> stationsData) {
         List<RadioStation> radioStations = new ArrayList<>();
 
@@ -72,7 +81,7 @@ public class RadioService {
             for (Map<String, Object> stationMap : stationsData) {
                 RadioStation station = new RadioStation();
 
-                station.setC    hangeuuid((String) stationMap.get("changeuuid"));
+                station.setChangeuuid((String) stationMap.get("changeuuid"));
                 station.setStationuuid((String) stationMap.get("stationuuid"));
                 station.setServeruuid((String) stationMap.get("serveruuid"));
                 station.setName((String) stationMap.get("name"));
