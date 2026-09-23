@@ -43,6 +43,7 @@ public class RadioService {
             radioStations.sort(Comparator.comparingInt(RadioStation::getVotes).reversed());
 
             return radioStations;
+            
         } catch (HttpServerErrorException e) {
             // Trata erros do servidor (502 Bad Gateway, por exemplo)
             if (e.getStatusCode().value() == 502) {

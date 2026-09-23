@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rádios</title>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Rádios</h1>
+      <ul>
+        <li th:each="radio : ${radios}">
+          <a th:href="${radio.urlResolved != null ? radio.urlResolved : radio.url}"
+             th:text="${radio.name}">Nome da rádio</a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Rádios favoritas</h2>
+      <ul>
+        <li th:each="radio : ${radiosFavoritas}">
+          <a th:href="${radio.urlResolved != null ? radio.urlResolved : radio.url}"
+             th:text="${radio.name}">Nome da rádio favorita</a>
+        </li>
+        <li th:if="${#lists.isEmpty(radiosFavoritas)}">Nenhuma rádio favorita.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

@@ -37,7 +37,6 @@ public class RadioStation {
   private Double geoLat;
   private Double geoLong;
   private boolean hasExtendedInfo;
-  private boolean favorite;
 
   public RadioStation() {
   }
