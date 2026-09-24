@@ -26,5 +26,5 @@ public class RadioStationController {
     model.addAttribute("radiosFavoritas", radiosFavoritas);
 
     return "home";
-  }
+  } 
 }

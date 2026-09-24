@@ -3,30 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rádios</title>
+  <title>Radio Deck | Estações online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-  <main>
-    <section>
-      <h1>Rádios</h1>
-      <ul>
-        <li th:each="radio : ${radios}">
-          <a th:href="${radio.urlResolved != null ? radio.urlResolved : radio.url}"
-             th:text="${radio.name}">Nome da rádio</a>
-        </li>
-      </ul>
+  <header class="topbar">
+    <a class="brand" href="/home" aria-label="Radio Deck - início">
+      <span class="brand-mark">◉</span>
+      <span>RADIO<span class="brand-accent">DECK</span></span>
+    </a>
+    <span class="live-indicator"><i></i> transmissão ao vivo</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">SINTONIZE O MUNDO</p>
+        <h1>Estações que<br><span>fazem barulho.</span></h1>
+        <p class="hero-copy">Uma seleção independente de rádios online para ouvir, descobrir e compartilhar.</p>
+      </div>
+      <div class="hero-stamp" aria-hidden="true">
+        <span>FM</span>
+        <strong>24<br><small>HRS</small></strong>
+      </div>
     </section>
 
-    <section>
-      <h2>Rádios favoritas</h2>
-      <ul>
-        <li th:each="radio : ${radiosFavoritas}">
-          <a th:href="${radio.urlResolved != null ? radio.urlResolved : radio.url}"
-             th:text="${radio.name}">Nome da rádio favorita</a>
-        </li>
-        <li th:if="${#lists.isEmpty(radiosFavoritas)}">Nenhuma rádio favorita.</li>
-      </ul>
+    <section class="section-heading">
+      <div>
+        <p class="eyebrow">CATÁLOGO // BRASIL</p>
+        <h2>Rádios disponíveis <span th:text="'(' + ${#lists.size(radios)} + ')'">(0)</span></h2>
+      </div>
+      <span class="sort-label">ordenadas por votos ↓</span>
+    </section>
+
+    <section class="favorites-panel">
+      <details>
+        <!-- O summary é o que fica visível quando está fechado -->
+        <summary style="cursor: pointer;">
+          <div style="display: inline-block; vertical-align: middle;">
+            <p class="eyebrow">SUA COLEÇÃO</p>
+            <h2>Rádios favoritas</h2>
+          </div>
+        </summary>
+
+        <!-- O que vem abaixo do summary é revelado ao clicar -->
+        <div class="panel-content">
+          <p th:if="${#lists.isEmpty(radiosFavoritas)}">Suas favoritas aparecerão aqui.</p>
+          <div class="favorite-items" th:unless="${#lists.isEmpty(radiosFavoritas)}">
+            <a th:each="radio : ${radiosFavoritas}" th:href="${radio.urlResolved != null ? radio.urlResolved : radio.url}"
+              th:text="${radio.name}">Rádio favorita</a>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="station-list" aria-label="Lista de estações">
+      <article class="station-card" th:each="radio, item : ${radios}">
+        <div class="station-number" th:text="${#numbers.formatInteger(item.count + 1, 2)}">01</div>
+        <div class="station-logo">
+          <img th:src="${radio.favicon}" th:alt="'Logo da ' + ${radio.name}" onerror="this.style.display='none'">
+          <span th:if="${radio.favicon == null or radio.favicon.isEmpty()}"
+                th:text="${#strings.substring(radio.name, 0, 1)}">R</span>
+        </div>
+        <div class="station-main">
+          <div class="station-title-row">
+            <h3 th:text="${radio.name}">Nome da rádio</h3>
+            <span class="status" th:classappend="${radio.lastcheckok != 1 ? ' offline' : ''}">
+              <i></i><span th:text="${radio.lastcheckok == 1 ? 'online' : 'offline'}">online</span>
+            </span>
+          </div>
+          <div class="station-meta">
+            <span th:text="${radio.language != null and !radio.language.isEmpty() ? radio.language : 'idioma não informado'}">português</span>
+            <span class="dot">•</span>
+            <span th:text="${radio.country != null and !radio.country.isEmpty() ? radio.country : 'Brasil'}">Brasil</span>
+          </div>
+          <div class="tags" th:if="${radio.tags != null and !radio.tags.isEmpty()}">
+            <span th:each="tag : ${#strings.arraySplit(radio.tags, ',')}" th:text="${tag.trim()}">rock</span>
+          </div>
+        </div>
+        <div class="station-details">
+          <div><small>VOTOS</small><strong th:text="${radio.votes}">0</strong></div>
+          <div><small>CLIQUES</small><strong th:text="${radio.clickcount}">0</strong></div>
+          <div><small>LOCAL</small><strong th:text="${radio.state != null and !radio.state.isEmpty() ? radio.state : '—'}">MG</strong></div>
+          <div><small>CODEC</small><strong th:text="${radio.codec != null and !radio.codec.isEmpty() ? radio.codec : '—'}">AAC</strong></div>
+        </div>
+        <a class="external-link" th:href="${radio.homepage != null and !radio.homepage.isEmpty() ? radio.homepage : radio.url}"
+           target="_blank" rel="noopener" th:aria-label="'Abrir página da ' + ${radio.name}">↗</a>
+        <audio controls preload="none" th:src="${radio.urlResolved != null ? radio.urlResolved : radio.url}">
+          Seu navegador não suporta áudio.
+        </audio>
+      </article>
+      <div class="empty-state" th:if="${#lists.isEmpty(radios)}">
+        <strong>Nenhuma estação encontrada.</strong>
+        <span>Tente novamente mais tarde.</span>
+      </div>
     </section>
   </main>
+
+  <footer>RADIODECK <span>·</span> CURADORIA DIGITAL DE RÁDIO <span>·</span> 2024</footer>
 </body>
 </html>
