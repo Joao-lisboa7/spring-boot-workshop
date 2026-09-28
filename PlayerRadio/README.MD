@@ -12,11 +12,12 @@ Graças à integração do Thymeleaf, a aplicação é capaz de gerar dinamicame
 
 ## Captura de Tela
 
-- **Home**: Exibe as 90 rádios recuperadas da cidade de Belo Horizonte
+- **Home**: Exibe 132 rádios recuperadas do estado de Minas Gerais
 
-| ![Home](https://joaopauloaramuni.github.io/java-imgs/RadioBrowserAPI/imgs/home.png) |
-|:--------------------:|
-|         Home         |
+| ![Imagem 1](image.png)
+  ![Imagem 2](src/main/resources/images/tela2.png)
+
+# Home
 
 ## Dependências
 
@@ -63,8 +64,8 @@ Thymeleaf é um motor de templates para Java que permite a criação de páginas
 │   │   │   ├── static
 │   │   │   │   └── css
 │   │   │   │       └── style.css
-│   │   │   │   └── imgs
-│   │   │   │       └── aradio.webp
+│   │   │   │   └── images
+│   │   │   │       
 │   │   │   └── templates
 │   │   │       └── home.html
 │   └── test
@@ -81,15 +82,19 @@ Thymeleaf é um motor de templates para Java que permite a criação de páginas
 ## Endpoints
 
 ```java
-@GetMapping("/")
-public String listRadioStations(Model model) {
-    List<RadioStation> radioStations = radioBrowserApiService.listRadioStations();
-    model.addAttribute("stations", radioStations);
+  @GetMapping("/home")
+  public String home(Model model) {
+    List<RadioStation> radios = radioService.listRadioStations();
+    List<RadioStation> radiosFavoritas = radioService.listFavoriteStations(null);
+
+    model.addAttribute("radios", radios);
+    model.addAttribute("radiosFavoritas", radiosFavoritas);
+
     return "home";
-}
+  } 
 ```
 
-Acesse a página inicial em: [http://localhost:8080/](http://localhost:8080/)
+Acesse a página inicial em: [http://localhost:8080/home](http://localhost:8080/home)
 
 **Informações da Home**
 
